@@ -36,7 +36,10 @@ end
 // initialization of Memory and Reg bank
 initial begin
     dut.ins_mem[0]  <= 16'h2800;
+    dut.ins_mem[1]  <= 16'hB401;
     dut.data_mem[0] <= 16'h0000;
+    dut.data_mem[1] <= 16'h0002;
+    dut.data_mem[2] <= 16'h0003;
 
     fd = $fopen("tst.txt", "w");
     // $fstrobe(fd, $time, dut.pipeAcc16.Reg[1]);

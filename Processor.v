@@ -29,7 +29,7 @@ wire [15:0] EX_MEM_ALUOut;
 integer data_ptr;
 
 // halt flag
-reg HLT;
+reg HLT, TAKEN_BRANCH;
 // cond = MSB - ng, LSB - zr
 wire [1:0]cond;
 
@@ -45,21 +45,27 @@ always @(posedge clk1) begin
     data_ptr        <=  data_ptr+1;
     if(~HLT) begin
         IF_ID_IR    <=  ins_mem[PC];
-        // if(ID_EX_type == BRANCH)
-        // PC          <=  
-        PC          <=  PC+1;
+
+        if(ID_EX_type == TAKEN_BRANCH)  begin
+
+            if(ID_EX_IR[15])    PC  <=  ins_mem[ID_EX_IR[9:0]];
+
+            else                PC  <=  ins_mem[ins_mem[ID_EX_IR[9:0]]];
+
+        end
+        else                    PC  <=  PC+1;
     end    
 end
 
 // very simple ID stage
 always @(posedge clk2) begin
 
-    if(~HLT)begin
-        ID_EX_IR   <=  IF_ID_IR;
+    if(~HLT && ~TAKEN_BRANCH)begin
+        ID_EX_IR                           <=  IF_ID_IR;
 
-        if(~ID_EX_IR)   ID_EX_A    <=  data_mem[ID_EX_IR[9:0]];             //direct mem access
+        if(~ID_EX_IR[15])       ID_EX_A    <=  data_mem[ID_EX_IR[9:0]];             //direct mem access
 
-        else            ID_EX_A    <=  data_mem[data_mem[ID_EX_IR[9:0]]];   //indirect mem access
+        else                    ID_EX_A    <=  data_mem[data_mem[ID_EX_IR[9:0]]];   //indirect mem access
 
         case (ID_EX_IR[14:10])
             5'b00000:   cb_ID  <=  6'b101010;
@@ -75,6 +81,13 @@ always @(posedge clk2) begin
             5'b01010:   cb_ID  <=  6'b110111;
             5'b01011:   cb_ID  <=  6'b001110;
             5'b01100:   cb_ID  <=  6'b110010;
+            5'b01101:   cb_ID  <=  6'b000010;
+            5'b01110:   cb_ID  <=  6'b010011;
+            5'b01111:   cb_ID  <=  6'b000111;
+            5'b10000:   cb_ID  <=  6'b000000;
+            5'b10001:   cb_ID  <=  6'b010101;
+            5'b10010:   cb_ID  <=  6'b110000;
+            5'b10100:   TAKEN_BRANCH <= 1;
             default:    cb_ID  <=  6'b110000;
         endcase
     end
