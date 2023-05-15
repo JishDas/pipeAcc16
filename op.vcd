@@ -1,0 +1,202 @@
+$date
+	Tue May 16 04:27:47 2023
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1ns
+$end
+$scope module tb_Processor $end
+$var reg 1 ! clk1 $end
+$var reg 1 " clk2 $end
+$var integer 32 # fd [31:0] $end
+$scope module dut $end
+$var wire 1 ! clk1 $end
+$var wire 1 " clk2 $end
+$var wire 1 $ rst $end
+$var wire 2 % cond [1:0] $end
+$var wire 16 & EX_MEM_ALUOut [15:0] $end
+$var reg 16 ' Acc [15:0] $end
+$var reg 16 ( EX_MEM_IR [15:0] $end
+$var reg 1 ) HLT $end
+$var reg 16 * ID_EX_A [15:0] $end
+$var reg 16 + ID_EX_IR [15:0] $end
+$var reg 16 , IF_ID_IR [15:0] $end
+$var reg 16 - PC [15:0] $end
+$var reg 6 . cb_EX [5:0] $end
+$var reg 6 / cb_ID [5:0] $end
+$var integer 32 0 data_ptr [31:0] $end
+$scope module func $end
+$var wire 1 1 f $end
+$var wire 1 2 no $end
+$var wire 1 3 nx $end
+$var wire 1 4 ny $end
+$var wire 16 5 x [15:0] $end
+$var wire 16 6 x1 [15:0] $end
+$var wire 16 7 y [15:0] $end
+$var wire 16 8 y1 [15:0] $end
+$var wire 1 9 zx $end
+$var wire 1 : zy $end
+$var wire 17 ; f2 [16:0] $end
+$var wire 17 < f1 [16:0] $end
+$var reg 1 = ng $end
+$var reg 16 > o [15:0] $end
+$var reg 1 ? zr $end
+$upscope $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+#0
+$dumpvars
+x?
+bx >
+x=
+bx <
+bx ;
+x:
+x9
+bx 8
+bx 7
+bx 6
+bx 5
+x4
+x3
+x2
+x1
+b11111111111111111111111111111111 0
+bx /
+bx .
+b0 -
+bx ,
+bx +
+bx *
+0)
+b0 (
+bx '
+bx &
+bx %
+z$
+b10000000000000000000000000000011 #
+0"
+0!
+$end
+#1
+b1 -
+b10100000000000 ,
+b0 0
+bx (
+1!
+#2
+b110000 /
+b10100000000000 +
+1"
+#3
+0!
+#4
+0"
+#5
+b0x %
+0=
+b1111111111111111 6
+b0xxxxxxxxxxxxxxxx ;
+b0xxxxxxxxxxxxxxxx <
+19
+13
+0:
+04
+01
+02
+b10100000000000 (
+b110000 .
+b10 -
+bx ,
+b1 0
+1!
+#6
+b0 &
+b0 >
+b1 %
+1?
+b0 ;
+b0 <
+b0 8
+b110111 /
+b0 *
+b0 7
+bx +
+1"
+#7
+0!
+#8
+0"
+#9
+b1 &
+b1 >
+0?
+b0 %
+0=
+b1111111111111111 8
+b11111111111111110 <
+b1 ;
+14
+11
+12
+b11 -
+b10 0
+bx (
+b110111 .
+1!
+#10
+bx &
+bx >
+x?
+bx %
+x=
+bx ;
+bx <
+bx 8
+b110000 /
+bx *
+bx 7
+b1 '
+b1 5
+1"
+#11
+0!
+#12
+0"
+#13
+bx &
+bx >
+x?
+b0x %
+0=
+bx 8
+b0xxxxxxxxxxxxxxxx ;
+b0xxxxxxxxxxxxxxxx <
+04
+01
+02
+b110000 .
+b100 -
+b11 0
+1!
+#14
+bx '
+bx 5
+1"
+#15
+0!
+#16
+0"
+#17
+b101 -
+b100 0
+1!
+#18
+1"
+#19
+0!
+#20
+0"

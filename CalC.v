@@ -1,8 +1,7 @@
-`timescale 1ns / 1ps
+`timescale 1ns / 1ns
 
 module CalC(input [15:0]x, 
             input [15:0]y,
-            input clk,
             input zx,nx,zy,ny,f,no,
             output reg ng,zr,
             output reg [15:0]o);
@@ -16,7 +15,7 @@ module CalC(input [15:0]x,
             assign f1[16:0] =f?(x1+y1):(x1&y1);
             assign f2[16:0] =no?~f1:f1;
 
-            always @(posedge clk) begin
+            always @(*) begin
                 ng <= f2[16];
                 zr <= (f2=={16{1'b0}});           
                 o <= f2[15:0];

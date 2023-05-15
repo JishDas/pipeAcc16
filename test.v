@@ -7,7 +7,7 @@ reg [15:0]y;
 
 CalC dut
 (
-    .x(16'hxxxx), .y(y), .zx(cb_EX[5]), .nx(cb_EX[4]), .zy(cb_EX[3]), .ny(cb_EX[2]), .f(cb_EX[1]), .no(cb_EX[0]), .clk(clk)
+    .x(16'hxxxx), .y(y), .zx(cb_EX[5]), .nx(cb_EX[4]), .zy(cb_EX[3]), .ny(cb_EX[2]), .f(cb_EX[1]), .no(cb_EX[0])
 );
 
 localparam CLK_PERIOD = 2;

@@ -1,0 +1,77 @@
+$date
+	Tue May 16 04:26:49 2023
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1ns
+$end
+$scope module tb_CalC $end
+$var reg 6 ! cb_EX [5:0] $end
+$var reg 1 " clk $end
+$var reg 16 # y [15:0] $end
+$scope module dut $end
+$var wire 1 $ f $end
+$var wire 1 % no $end
+$var wire 1 & nx $end
+$var wire 1 ' ny $end
+$var wire 16 ( x [15:0] $end
+$var wire 16 ) x1 [15:0] $end
+$var wire 16 * y [15:0] $end
+$var wire 16 + y1 [15:0] $end
+$var wire 1 , zx $end
+$var wire 1 - zy $end
+$var wire 17 . f2 [16:0] $end
+$var wire 17 / f1 [16:0] $end
+$var reg 1 0 ng $end
+$var reg 16 1 o [15:0] $end
+$var reg 1 2 zr $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+#0
+$dumpvars
+x2
+bx 1
+x0
+bx /
+bx .
+x-
+x,
+bx +
+bx *
+bx )
+bx (
+x'
+x&
+x%
+x$
+bx #
+0"
+bx !
+$end
+#1
+b1 1
+02
+00
+b1 .
+b11111111111111110 /
+b1111111111111111 )
+b1111111111111111 +
+1,
+1&
+0-
+1'
+1$
+1%
+b0 #
+b0 *
+b110111 !
+1"
+#2
+0"
+#3
+1"
+#4
+0"

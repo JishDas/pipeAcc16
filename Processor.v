@@ -36,7 +36,7 @@ wire [1:0]cond;
 // give those control bits to CalC.v and take outputs at clk1
 CalC func (.x(Acc), .y(ID_EX_A), .zx(cb_EX[5]),
             .nx(cb_EX[4]), .zy(cb_EX[3]), .ny(cb_EX[2]),
-            .f(cb_EX[1]), .no(cb_EX[0]), .clk(clk1), .ng(cond[1]),
+            .f(cb_EX[1]), .no(cb_EX[0]), .ng(cond[1]),
             .zr(cond[0]), .o(EX_MEM_ALUOut));
 
 // very simple IF stage
