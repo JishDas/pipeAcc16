@@ -25,11 +25,12 @@ reg [15:0]  EX_MEM_IR;     //output reg since ALU is completely a combinational 
 reg [15:0]  Acc;
 wire [15:0] EX_MEM_ALUOut;
 
-// Mem parameters
-integer data_ptr;
+// Mem registers
+reg [9:0]EX_MEM_Add;
 
 // halt flag
-reg HLT, TAKEN_BRANCH;
+reg HLT, TAKEN_BRANCH_PC, TAKEN_BRANCH;
+reg [1:0]count;
 // cond = MSB - ng, LSB - zr
 wire [1:0]cond;
 
@@ -42,19 +43,8 @@ CalC func (.x(Acc), .y(ID_EX_A), .zx(cb_ID[5]),
 // very simple IF stage
 always @(posedge clk1) begin
 
-    data_ptr        <=  data_ptr+1;
-    if(~HLT) begin
-        IF_ID_IR    <=  ins_mem[PC];
-
-        if(TAKEN_BRANCH == 1)  begin
-
-            if(~ID_EX_IR[15])    PC  <=  ID_EX_IR[9:0];                    //direct mem access
-
-            else                PC  <=  ins_mem[ID_EX_IR[9:0]];            //indirect mem access
-
-        end
-        else                    PC  <=  PC+1;
-    end    
+    if(~HLT && ~TAKEN_BRANCH)   IF_ID_IR    <=  ins_mem[PC];
+    PC  <=  TAKEN_BRANCH ?  (ID_EX_IR[15] ? ins_mem[ins_mem[ID_EX_IR[9:0]]] : ins_mem[ID_EX_IR[9:0]]) :  PC+1;
 end
 
 // very simple ID stage
@@ -87,7 +77,10 @@ always @(posedge clk2) begin
             5'b10000:   cb_ID  <=  6'b000000;
             5'b10001:   cb_ID  <=  6'b010101;
             5'b10010:   cb_ID  <=  6'b110000;
-            5'b10100:   TAKEN_BRANCH <= 1;
+            5'b10011:   Wrt    <=  1;
+            5'b10100:   TAKEN_BRANCH    <= 1;
+            5'b10101:   TAKEN_BRANCH    <= cond[0];
+            5'b10110:   TAKEN_BRANCH    <= cond[1];
             default:    cb_ID  <=  6'b110000;
         endcase
     end
@@ -95,21 +88,23 @@ end
 
 // very simple EX stage
 always @(posedge clk1) begin
-    if(~HLT && ~TAKEN_BRANCH)begin
+    if(~HLT)begin
+        // EX_MEM_IR   <=  IF_ID_IR; no need to do this
         cb_EX       <=  cb_ID;
-        /* since inpurs are being given at clock edge output will also appear at clock edge
+        /* since inputs are being given at clock edge output will also appear at clock edge
             there is no special need to initialize it as a wire and latch it onto a reg at
             clock edge.
         */
-            TAKEN_BRANCH            <= 0;
+        if(Wrt) EX_MEM_Add  <= (ID_EX_IR[15] ? data_mem[data_mem[ID_EX_IR[9:0]]] : data_mem[ID_EX_IR[9:0]]);
     end
 end
 
-// Mem Stage
+// Acc Stage
 always @(posedge clk2) begin
-    if(~HLT)
-    #1 Acc  <=  EX_MEM_ALUOut;         //since TAKEN_BRANCH has no effect over Mem due to clk2
-    
+    if(~HLT) begin
+        Acc  <=  EX_MEM_ALUOut;
+        if(Wrt) Mem[EX_MEM_Add]   <= Acc;
+    end
 end
     
 endmodule
