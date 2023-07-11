@@ -26,7 +26,8 @@ end
 // initialization of PC, other flags
 initial begin
     dut.pipeAcc16.HLT      <= 0;
-    dut.pipeAcc16.data_ptr <= -1;
+    dut.pipeAcc16.Wrt      <=  0;
+    dut.pipeAcc16.TAKEN_BRANCH  <= 0;
     // dut.pipeAcc16.TAKEN_BRANCH <= 0;
     dut.pipeAcc16.EX_MEM_IR    <= {16{1'b0}};
     dut.pipeAcc16.PC           <= {16{1'b0}};
@@ -41,10 +42,6 @@ initial begin
     dut.data_mem[0] <= 16'h0000;
     dut.data_mem[1] <= 16'h0002;
     dut.data_mem[2] <= 16'h0003;
-
-    fd = $fopen("tst.txt", "w");
-    // $fstrobe(fd, $time, dut.pipeAcc16.Reg[1]);
-    $fstrobe(fd, $time, dut.pipeAcc16.Acc);
     
     $dumpfile("op.vcd");
     $dumpvars(0,tb_Processor);

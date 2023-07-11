@@ -1,3 +1,6 @@
+//Some changes were made from the given Ichip PS, so that it could be pipelined
+//x input is given from the Acc, and y input is given by the user as address(present in instruction)
+
 `timescale 1ns/1ns
 `include "CalC.v"
 
@@ -29,8 +32,7 @@ wire [15:0] EX_MEM_ALUOut;
 reg [9:0]EX_MEM_Add;
 
 // halt flag
-reg HLT, TAKEN_BRANCH_PC, TAKEN_BRANCH;
-reg [1:0]count;
+reg HLT, TAKEN_BRANCH, Wrt;
 // cond = MSB - ng, LSB - zr
 wire [1:0]cond;
 
@@ -43,8 +45,13 @@ CalC func (.x(Acc), .y(ID_EX_A), .zx(cb_ID[5]),
 // very simple IF stage
 always @(posedge clk1) begin
 
-    if(~HLT && ~TAKEN_BRANCH)   IF_ID_IR    <=  ins_mem[PC];
-    PC  <=  TAKEN_BRANCH ?  (ID_EX_IR[15] ? ins_mem[ins_mem[ID_EX_IR[9:0]]] : ins_mem[ID_EX_IR[9:0]]) :  PC+1;
+    if(~HLT && ~TAKEN_BRANCH){
+        IF_ID_IR    <=  ins_mem[PC];
+        //NPC specially stores sequential ins
+        NPC         <= PC+1;
+    }   
+    PC  <=  TAKEN_BRANCH ?  (ID_EX_IR[15] ? ins_mem[ins_mem[ID_EX_IR[9:0]]] : ins_mem[ID_EX_IR[9:0]]) :  NPC;
+    if(TAKEN_BRANCH) TAKEN_BRANCH   <= 0;
 end
 
 // very simple ID stage
@@ -53,10 +60,13 @@ always @(posedge clk2) begin
     if(~HLT)begin
         ID_EX_IR                           <=  IF_ID_IR;
 
+        //always prefetch the operands
         if(~ID_EX_IR[15])       ID_EX_A    <=  data_mem[ID_EX_IR[9:0]];             //direct mem access
 
         else                    ID_EX_A    <=  data_mem[data_mem[ID_EX_IR[9:0]]];   //indirect mem access
 
+
+        //opcode assignment
         case (IF_ID_IR[14:10])
             5'b00000:   cb_ID  <=  6'b101010;
             5'b00001:   cb_ID  <=  6'b111111;
@@ -81,6 +91,7 @@ always @(posedge clk2) begin
             5'b10100:   TAKEN_BRANCH    <= 1;
             5'b10101:   TAKEN_BRANCH    <= cond[0];
             5'b10110:   TAKEN_BRANCH    <= cond[1];
+            5'b10111:   HLT             <= 1;
             default:    cb_ID  <=  6'b110000;
         endcase
     end
@@ -95,6 +106,7 @@ always @(posedge clk1) begin
             there is no special need to initialize it as a wire and latch it onto a reg at
             clock edge.
         */
+        //  if Wrt ins, then take the store address from the instrn
         if(Wrt) EX_MEM_Add  <= (ID_EX_IR[15] ? data_mem[data_mem[ID_EX_IR[9:0]]] : data_mem[ID_EX_IR[9:0]]);
     end
 end
@@ -102,8 +114,10 @@ end
 // Acc Stage
 always @(posedge clk2) begin
     if(~HLT) begin
+        //write the final output to Acc
         Acc  <=  EX_MEM_ALUOut;
-        if(Wrt) Mem[EX_MEM_Add]   <= Acc;
+        //if Wrt, then store the data in the given add
+        if(Wrt) data_mem[EX_MEM_Add]   <= Acc;
     end
 end
     
