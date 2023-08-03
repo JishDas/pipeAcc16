@@ -115,9 +115,10 @@ end
 always @(posedge clk2) begin
     if(~HLT) begin
         //write the final output to Acc
-        Acc  <=  EX_MEM_ALUOut;
+        Acc  =  EX_MEM_ALUOut;
         //if Wrt, then store the data in the given add
-        if(Wrt) data_mem[EX_MEM_Add]   <= Acc;
+        //blocking statements since first Acc, then data_mem
+        if(Wrt) data_mem[EX_MEM_Add]   = Acc;
     end
 end
     
